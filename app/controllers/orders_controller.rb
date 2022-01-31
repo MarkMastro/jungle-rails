@@ -2,16 +2,23 @@ class OrdersController < ApplicationController
 
   def show
     @order = Order.find(params[:id])
+    @products = @order.line_items.map{|product|
+      Product.find(product.product_id)
+    }
+    @line_items=@order.line_items
   end
 
   def create
+    puts "order started"
+    puts enhanced_cart
+    puts "cart"
     charge = perform_stripe_charge
     order  = create_order(charge)
-
     if order.valid?
       empty_cart!
       redirect_to order, notice: 'Your Order has been placed.'
     else
+      puts "error"
       redirect_to cart_path, flash: { error: order.errors.full_messages.first }
     end
 
