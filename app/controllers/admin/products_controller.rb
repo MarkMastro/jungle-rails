@@ -1,6 +1,6 @@
 class Admin::ProductsController < ApplicationController
   http_basic_authenticate_with name: ENV["admin_username"], password: ENV["admin_password"]
-
+  before_filter :authorize
   def index
     @products = Product.order(id: :desc).all
   end
@@ -17,7 +17,7 @@ class Admin::ProductsController < ApplicationController
     else
       render :new
     end
-    
+
   end
 
   def destroy
